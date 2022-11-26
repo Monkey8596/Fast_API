@@ -4,7 +4,7 @@ from enum import Enum
 
 #Pydantic
 from pydantic import BaseModel
-from pydantic import Field
+from pydantic import Field, EmailStr, PaymentCardNumber
 
 # FastAPI
 from fastapi import FastAPI
@@ -24,9 +24,21 @@ class Hair_Color(Enum):
     red = 'red'
 
 class Location(BaseModel):
-    city : str
-    state : str
-    country: str
+    city : str = Field(
+        ...,
+        max_length = 120, 
+        example = 'Bogotá'
+    )
+    state : str = Field(
+        ...,
+        max_length = 120,  
+        example = 'Cundinamarca'
+    )
+    country: str = Field(
+        ...,
+        max_length = 120,  
+        example = 'Colombia'
+    )
 
 
 class Person(BaseModel):
@@ -34,21 +46,48 @@ class Person(BaseModel):
         ..., 
         min_length = 1,
         max_length = 50,
+        example = 'Oscar'
         )
 
     last_name : str = Field(
         ..., 
         min_length = 1,
         max_length = 50,
+        example = 'Piedrahita'
         )
 
     age : int = Field(
         ...,
         gt = 0,
-        le = 115 
+        le = 115,
+        example = '56'
     )
-    hair_color : Optional[Hair_Color] = Field(default = None)
-    is_married : Optional[bool] = Field( default= None)
+    hair_color : Optional[Hair_Color] = Field(default = None, example = 'black')
+    is_married : Optional[bool] = Field( default= None, example = False)
+    email : EmailStr
+    payment : PaymentCardNumber = Field(
+        ...,
+        example = '1234567788534679'
+    )
+    blood_type: Optional[str] = Field(
+        ...,
+        min_length = 2,
+        max_length = 3,
+        example = 'o+'
+    )
+
+
+    # class Config():
+    #     schema_extra = {
+    #         'example':{
+    #             'first_name': 'Facundo',
+    #             'last_name' : 'Garcia',
+    #             'age' : 21,
+    #             'hair_color' : 'blonde',
+    #             'is_married': False
+    #         }
+    #     }
+
 
 
 
@@ -131,4 +170,5 @@ def update_person(
     results = person.dict()
     results.update(location.dict())
     return results
+
 
