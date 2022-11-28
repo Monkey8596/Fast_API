@@ -75,6 +75,10 @@ class Person(BaseModel):
         max_length = 3,
         example = 'o+'
     )
+    password : str = Field(
+        ...,
+        min_length=8
+    )
 
 
     # class Config():
@@ -88,7 +92,40 @@ class Person(BaseModel):
     #         }
     #     }
 
+class PersonOut(BaseModel):
+    first_name : str = Field(
+        ..., 
+        min_length = 1,
+        max_length = 50,
+        example = 'Oscar'
+        )
 
+    last_name : str = Field(
+        ..., 
+        min_length = 1,
+        max_length = 50,
+        example = 'Piedrahita'
+        )
+
+    age : int = Field(
+        ...,
+        gt = 0,
+        le = 115,
+        example = '56'
+    )
+    hair_color : Optional[Hair_Color] = Field(default = None, example = 'black')
+    is_married : Optional[bool] = Field( default= None, example = False)
+    email : EmailStr
+    payment : PaymentCardNumber = Field(
+        ...,
+        example = '1234567788534679'
+    )
+    blood_type: Optional[str] = Field(
+        ...,
+        min_length = 2,
+        max_length = 3,
+        example = 'o+'
+    )
 
 
 @app.get('/')
@@ -100,12 +137,8 @@ def home():
 
 # Request and Response body 
 
-@app.post('/person/new')
-def create_person(
-
-    person:Person = Body(...)
-    ):
-
+@app.post('/person/new', response_model = PersonOut)
+def create_person(person:Person = Body(...)):
     return person
 
 
