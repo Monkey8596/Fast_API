@@ -13,7 +13,6 @@ from fastapi import Body, Query, Path
 app = FastAPI()
 
 
-
 # Models
 
 class Hair_Color(Enum):
@@ -22,6 +21,7 @@ class Hair_Color(Enum):
     black = 'black'
     blonde = 'blonde'
     red = 'red'
+
 
 class Location(BaseModel):
     city : str = Field(
@@ -41,7 +41,7 @@ class Location(BaseModel):
     )
 
 
-class Person(BaseModel):
+class PersonBase(BaseModel):
     first_name : str = Field(
         ..., 
         min_length = 1,
@@ -75,65 +75,23 @@ class Person(BaseModel):
         max_length = 3,
         example = 'o+'
     )
+
+
+class Person(PersonBase):
     password : str = Field(
         ...,
         min_length=8
     )
+    
 
+class PersonOut(PersonBase):
+    pass
 
-    # class Config():
-    #     schema_extra = {
-    #         'example':{
-    #             'first_name': 'Facundo',
-    #             'last_name' : 'Garcia',
-    #             'age' : 21,
-    #             'hair_color' : 'blonde',
-    #             'is_married': False
-    #         }
-    #     }
-
-class PersonOut(BaseModel):
-    first_name : str = Field(
-        ..., 
-        min_length = 1,
-        max_length = 50,
-        example = 'Oscar'
-        )
-
-    last_name : str = Field(
-        ..., 
-        min_length = 1,
-        max_length = 50,
-        example = 'Piedrahita'
-        )
-
-    age : int = Field(
-        ...,
-        gt = 0,
-        le = 115,
-        example = '56'
-    )
-    hair_color : Optional[Hair_Color] = Field(default = None, example = 'black')
-    is_married : Optional[bool] = Field( default= None, example = False)
-    email : EmailStr
-    payment : PaymentCardNumber = Field(
-        ...,
-        example = '1234567788534679'
-    )
-    blood_type: Optional[str] = Field(
-        ...,
-        min_length = 2,
-        max_length = 3,
-        example = 'o+'
-    )
 
 
 @app.get('/')
 def home():
     return {'Hello': 'World'}
-
-
-
 
 # Request and Response body 
 
@@ -145,7 +103,6 @@ def create_person(person:Person = Body(...)):
 
 
 # Validations: Query Parameters 
-
 
 @app.get('/person/detail')
 
