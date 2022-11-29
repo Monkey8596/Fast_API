@@ -117,9 +117,24 @@ def home():
     path='/person/new',
     response_model = PersonOut,
     status_code=status.HTTP_201_CREATED,
-    tags=['People']
+    tags=['People'],
+    summary='Create Person in the app'
     )
 def create_person(person:Person = Body(...)):
+
+    '''
+    # **Create Person** 
+    
+    This path operation creates a person in the app and save the informatuon in the datebase
+    
+    Parameters:
+    - Request body parameter:
+        - **person:Person** -> A person model with some characteristics 
+    
+    - Returns:
+        - Person model with the characteristics
+    '''
+
     return person
 
 
@@ -163,7 +178,8 @@ People = [1,2,3,4,5]
 @app.get(
     path='/person/detail/{person_id}',
     status_code=status.HTTP_200_OK,
-    tags=['People']
+    tags=['People'],
+    summary='Validate a tweet'
     )
 def show_person(
 
@@ -177,12 +193,27 @@ def show_person(
         )
 
 ):
-    if person_id not in persons:
+    '''
+    # **Validate person tweet** 
+    
+    This endpoint validate if the tweet exist or not 
+    
+    Parameters:
+    - Path parameters:
+        - **gt(Greater than) = 0** -> The Tweet ID must be greater than 0  
+
+    - Returns:
+        - If the tweet exist or not 
+    '''
+
+    if person_id not in People:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='This person does not exist'
         )
     return{person_id: 'It exists!'}
+
+    
 
 
 
@@ -190,7 +221,8 @@ def show_person(
 
 @app.put(
     path =  '/person/{person_id}',
-    tags=['People']
+    tags=['People'],
+    summary='Update tweet'
     )
 def update_person(
     person_id : int = Path(
@@ -203,6 +235,20 @@ def update_person(
     person: Person = Body(...),
     location: Location = Body(...)
 ):
+    '''
+    # **Update Details** 
+    
+    This endpoint update the informaton of the person
+    
+    Parameters:
+    - Path parameters:
+        - **gt(Greater than) = 0** -> The Tweet ID must be greater than 0 
+        -  Person ID
+
+    - Returns:
+        - The information updated 
+    '''
+
     results = person.dict()
     results.update(location.dict())
     return results
