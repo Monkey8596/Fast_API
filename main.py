@@ -8,7 +8,7 @@ from pydantic import Field, EmailStr, PaymentCardNumber
 
 # FastAPI
 from fastapi import FastAPI
-from fastapi import Body, Query, Path, Form, Header, Cookie
+from fastapi import Body, Query, Path, Form, Header, Cookie, UploadFile, File
 from fastapi import status
 
 app = FastAPI()
@@ -98,7 +98,7 @@ class LoginOut(BaseModel):
     )
     message: str = Field(example='Login Succesfuly!')
 
-
+#Path Operation ej
 @app.get(
     path = '/',
     status_code=status.HTTP_200_OK
@@ -230,4 +230,19 @@ def contact(
 ):
     return user_agent
  
+
+
+#Files
+
+@app.post(
+    path= '/post-image'
+)
+def post_image(
+    image : UploadFile = File(...)
+):
+    return{
+        'Filename': image.filename,
+        'Format': image.content_type,
+        'Size(kb)': round(len(image.file.read())/1024, ndigits=2)
+    }
 
