@@ -3,7 +3,7 @@ from typing import Optional
 from enum import Enum
 
 #Pydantic
-from pydantic import BaseModel
+from pydantic import BaseModel 
 from pydantic import Field, EmailStr, PaymentCardNumber
 
 # FastAPI
@@ -144,7 +144,8 @@ def create_person(person:Person = Body(...)):
 @app.get(
     path='/person/detail',
     status_code=status.HTTP_200_OK,
-    tags=['People']
+    tags=['People'],
+    deprecated= True
     )
 
 def show_person(
